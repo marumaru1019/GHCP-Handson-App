@@ -14,11 +14,31 @@ stages:
           - task: NodeTool@0
             inputs:
               versionSpec: '20.x'
+
           - script: |
               npm install
-              npm run build --if-present
-              npm run test --if-present
-            displayName: 'npm install, build and test'
+            displayName: 'npm install'
+
+          - script: |
+              npm run lint
+            displayName: 'Run Lint'
+
+          - script: |
+              npm audit --audit-level=high
+            displayName: 'Run npm audit for vulnerabilities'
+
+          - script: |
+              npm run build
+            displayName: 'Build'
+
+          - script: |
+              npm run test -- --coverage
+              coverage=$(grep -Po 'All files.*?\K\d+(?=%)' coverage/lcov-report/index.html)
+              if [ "$coverage" -lt 80 ]; then
+                echo "Coverage below 80%"
+                exit 1
+              fi
+            displayName: 'Run Tests with Coverage Check (min 80%)'
 
           - script: |
               mkdir deploy
