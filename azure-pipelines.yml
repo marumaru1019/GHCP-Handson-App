@@ -15,16 +15,20 @@ stages:
           inputs:
             versionSpec: '20.x'
 
-        - script: npm install
+        - script: |
+            npm install
           displayName: 'npm install'
 
-        - script: npm run lint
+        - script: |
+            npm run lint
           displayName: 'Run Lint'
 
-        - script: npm audit --audit-level=high
+        - script: |
+            npm audit --audit-level=high
           displayName: 'Run npm audit for vulnerabilities'
 
-        - script: npm run build
+        - script: |
+            npm run build
           displayName: 'Build'
 
         - script: |
@@ -34,7 +38,7 @@ stages:
               echo "Coverage below 80%"
               exit 1
             fi
-          displayName: 'Run Tests with Coverage (min 80%)'
+          displayName: 'Run Tests with Coverage Check (min 80%)'
 
         - script: |
             mkdir deploy
@@ -51,7 +55,6 @@ stages:
 
 - stage: Deploy
   dependsOn: Build
-  condition: succeeded()
   jobs:
     - deployment: Deploy
       environment: Production
@@ -62,7 +65,10 @@ stages:
               - task: DownloadPipelineArtifact@2
                 inputs:
                   artifactName: 'node-app'
-                  targetPath: '$(System.DefaultWorkingDirectory)/deploy'
+                  targetPath: '.'
+
+              - script: unzip release.zip
+                displayName: 'Unzip Artifact'
 
               - task: AzureWebApp@1
                 inputs:
