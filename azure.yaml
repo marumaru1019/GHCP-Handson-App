@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: nextjs-todo-app
+metadata:
+  template: nextjs-todo-app@0.0.1-beta
+
+infra:
+  provider: bicep
+  path: ../devops-iac/infra
+
+services:
+  web:
+    project: .
+    language: js
+    host: appservice
+    hooks:
+      prebuild:
+        shell: sh
+        run: |
+          npm ci
+          npm run build
+    dist: .next
