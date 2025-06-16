@@ -75,6 +75,6 @@ stages:
                     azureSubscription: 'ME-MngEnvMCAP923326-ryuseioya-1(7acd21d4-1790-4c1d-9b01-02b72929a038)'
                     appType: 'webAppLinux'
                     appName: 'app-devops-sample'
-                    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+                    package: '$(System.DefaultWorkingDirectory)/deploy'
                     runtimeStack: 'NODE|20-lts'
                     startUpCommand: 'node server.js'
