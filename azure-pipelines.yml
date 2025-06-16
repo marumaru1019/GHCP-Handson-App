@@ -7,74 +7,98 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  - stage: Build
-    jobs:
-      - job: Build
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: '20.x'
+- stage: Build
+  jobs:
+    - job: Build
+      steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '20.x'
 
-          - script: |
-              npm install
-            displayName: 'npm install'
+        - script: |
+            npm install
+          displayName: 'npm install'
 
-          - script: |
-              npm run lint
-            displayName: 'Run Lint'
+        - script: |
+            npm run lint
+          displayName: 'Run Lint'
 
-          - script: |
-              npm audit --audit-level=high
-            displayName: 'Run npm audit for vulnerabilities'
+        - script: |
+            npm audit --audit-level=high
+          displayName: 'Run npm audit for vulnerabilities'
 
-          - script: |
-              npm run build
-            displayName: 'Build'
+        - script: |
+            npm run build
+          displayName: 'Build'
 
-          - script: |
-              npm run test -- --coverage
-              coverage=$(grep -Po 'All files.*?\K\d+(?=%)' coverage/lcov-report/index.html)
-              if [ "$coverage" -lt 80 ]; then
-                echo "Coverage below 80%"
-                exit 1
-              fi
-            displayName: 'Run Tests with Coverage Check (min 80%)'
+        - script: |
+            npm run test -- --coverage
+            coverage=$(grep -Po 'All files.*?\K\d+(?=%)' coverage/lcov-report/index.html)
+            if [ "$coverage" -lt 80 ]; then
+              echo "Coverage below 80%"
+              exit 1
+            fi
+          displayName: 'Run Tests with Coverage Check (min 80%)'
 
-          - script: |
-              mkdir deploy
-              cp -r ./.next/standalone/. ./deploy
-              cp -r ./public ./deploy
-              cp -r ./.next/static/. ./deploy/.next/static
-              zip -r release.zip ./deploy
-            displayName: 'Prepare and Zip Artifact'
+        - script: |
+            mkdir deploy
+            cp -r ./.next/standalone/. ./deploy
+            cp -r ./public ./deploy
+            cp -r ./.next/static/. ./deploy/.next/static
+            zip -r release.zip ./deploy
+          displayName: 'Prepare and Zip Artifact'
 
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: 'release.zip'
-              artifactName: 'node-app'
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: 'release.zip'
+            artifactName: 'node-app'
 
-  - stage: Deploy
-    dependsOn: Build
-    jobs:
-      - deployment: Deploy
-        environment: Production
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: DownloadPipelineArtifact@2
-                  inputs:
-                    artifactName: 'node-app'
-                    targetPath: '.'
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+    - deployment: Deploy
+      environment: Production
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: DownloadPipelineArtifact@2
+                inputs:
+                  artifactName: 'node-app'
+                  targetPath: '.'
 
-                - script: unzip release.zip
-                  displayName: 'Unzip Artifact'
+              - script: unzip release.zip
+                displayName: 'Unzip Artifact'
 
-                - task: AzureWebApp@1
-                  inputs:
-                    azureSubscription: 'ME-MngEnvMCAP923326-ryuseioya-1(7acd21d4-1790-4c1d-9b01-02b72929a038)'
-                    appType: 'webAppLinux'
-                    appName: 'app-devops-sample'
-                    package: '$(System.DefaultWorkingDirectory)/deploy'
-                    runtimeStack: 'NODE|20-lts'
-                    startUpCommand: 'node server.js'
+              - task: AzureWebApp@1
+                inputs:
+                  azureSubscription: 'ME-MngEnvMCAP923326-ryuseioya-1(7acd21d4-1790-4c1d-9b01-02b72929a038)'
+                  appType: 'webAppLinux'
+                  appName: 'app-devops-sample'
+                  package: '$(System.DefaultWorkingDirectory)/deploy'
+                  runtimeStack: 'NODE|20-lts'
+                  startUpCommand: 'node server.js'
+
+- stage: SecurityScan
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+    - job: SecScan
+      displayName: 'Advanced Security Scan'
+      steps:
+        - checkout: self
+
+        - task: AdvancedSecurity-Codeql-Init@1
+          inputs:
+            languages: 'javascript'
+            enableAutomaticCodeQLInstall: true
+          displayName: 'Initialize CodeQL'
+
+        - script: npm install
+          displayName: 'Restore dependencies for scan'
+
+        - task: AdvancedSecurity-Dependency-Scanning@1
+          displayName: 'Dependency Vulnerability Scan'
+
+        - task: AdvancedSecurity-Codeql-Analyze@1
+          displayName: 'CodeQL Security Scan'
