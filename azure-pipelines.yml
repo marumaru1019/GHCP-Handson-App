@@ -1,0 +1,60 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '20.x'
+          - script: |
+              npm install
+              npm run build --if-present
+              npm run test --if-present
+            displayName: 'npm install, build and test'
+
+          - script: |
+              mkdir deploy
+              cp -r ./.next/standalone/. ./deploy
+              cp -r ./public ./deploy
+              cp -r ./.next/static/. ./deploy/.next/static
+              zip -r release.zip ./deploy
+            displayName: 'Prepare and Zip Artifact'
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: 'release.zip'
+              artifactName: 'node-app'
+
+  - stage: Deploy
+    dependsOn: Build
+    jobs:
+      - deployment: Deploy
+        environment: Production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    artifactName: 'node-app'
+                    targetPath: '.'
+
+                - script: unzip release.zip
+                  displayName: 'Unzip Artifact'
+
+                - task: AzureWebApp@1
+                  inputs:
+                    azureSubscription: 'ME-MngEnvMCAP923326-ryuseioya-1(7acd21d4-1790-4c1d-9b01-02b72929a038)'
+                    appType: 'webAppLinux'
+                    appName: 'app-devops-sample'
+                    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+                    runtimeStack: 'NODE|20-lts'
+                    startUpCommand: 'node server.js'
