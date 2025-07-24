@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Todo, Priority, KanbanStatus } from '@/types';
+import { Todo, Priority, TodoStatus } from '@/types';
 import { AlertCircle, Circle, CheckCircle, Edit3, Trash2 } from 'lucide-react';
 
 interface TodoItemProps {
@@ -10,7 +10,7 @@ interface TodoItemProps {
   onDelete: (id: string) => void;
   onEdit: (id: string, newText: string) => void;
   onUpdatePriority: (id: string, priority: Priority) => void;
-  onUpdateStatus: (id: string, status: KanbanStatus) => void;
+  onUpdateStatus: (id: string, status: TodoStatus) => void;
 }
 
 export function TodoItem({
@@ -69,7 +69,7 @@ export function TodoItem({
   };
 
   // 📊 ステータスに応じたスタイルを取得
-  const getStatusStyle = (status: KanbanStatus) => {
+  const getStatusStyle = (status: TodoStatus) => {
     switch (status) {
       case 'todo':
         return 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-700';
@@ -92,7 +92,7 @@ export function TodoItem({
 
   // 🔄 ステータスの循環変更
   const handleStatusClick = () => {
-    const statuses: KanbanStatus[] = ['todo', 'in-progress', 'done'];
+    const statuses: TodoStatus[] = ['todo', 'in-progress', 'done'];
     const currentIndex = statuses.indexOf(todo.status || 'todo');
     const nextIndex = (currentIndex + 1) % statuses.length;
     onUpdateStatus(todo.id, statuses[nextIndex]);

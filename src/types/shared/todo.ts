@@ -3,9 +3,9 @@ export interface Todo {
   text: string;
   completed: boolean;
   createdAt: Date;
-  status?: KanbanStatus;
+  status?: TodoStatus;
   priority?: Priority;
 }
 
-export type KanbanStatus = 'todo' | 'in-progress' | 'done';
+export type TodoStatus = 'todo' | 'in-progress' | 'done';
 export type Priority = 'low' | 'medium' | 'high';

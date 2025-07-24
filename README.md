@@ -1,59 +1,76 @@
-# DevOps Demo - Next.js Project
+# 📝 Todo App - Next.js Project
 
-This is a [Next.js](https://nextjs.org) project built with TypeScript and Tailwind CSS, bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+GitHub CopilotとNext.jsを使って構築されたモダンなTodoアプリケーションです。
 
 ## 🚀 Tech Stack
 
 - **Framework**: Next.js 15 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Testing**: Jest + React Testing Library
 - **Code Quality**: ESLint
-- **Package Manager**: npm
+- **Package Manager**: pnpm
 
-## 🛠️ Getting Started
+## 🛠️ セットアップ & 立ち上げ方
 
-First, run the development server:
+### 前提条件
+- Node.js 18.0以上
+- pnpm (推奨) または npm
+
+### 1. リポジトリのクローン
+```bash
+git clone <repository-url>
+cd GHCP-TodoApp
+```
+
+### 2. 依存関係のインストール
+```bash
+# pnpmを使用する場合（推奨）
+pnpm install
+
+# npmを使用する場合
+npm install
+```
+
+### 3. 開発サーバーの起動
+```bash
+# pnpmを使用する場合
+pnpm dev
+
+# npmを使用する場合
+npm run dev
+```
+
+### 4. ブラウザでアクセス
+開発サーバーが起動したら、ブラウザで以下のURLにアクセスしてください：
+
+📱 **リスト表示**: [http://localhost:3000](http://localhost:3000)
+
+## 🧪 テストの実行
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 全テストを実行
+pnpm test
+# または
+npm test
+
+# テストをwatch モードで実行
+pnpm test:watch
+# または
+npm run test:watch
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏗️ ビルドとデプロイ
 
-You can start editing the page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# プロダクション用ビルド
+pnpm build
+# または
+npm run build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## 📁 Project Structure
-
+# ビルド後のアプリケーションを起動
+pnpm start
+# または
+npm start
 ```
-devops-demo/
-├── public/           # Static assets
-├── src/
-│   ├── app/         # App Router pages and layouts
-│   ├── components/  # Reusable components
-│   └── lib/         # Utility functions
-├── .github/         # GitHub configurations
-└── package.json     # Dependencies and scripts
-```
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
