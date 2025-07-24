@@ -1,5 +1,8 @@
 # コード規約（Coding Guidelines）
 
+## 大前提
+- 余計なコメントアウトはしないでください。
+
 ## 1. 基本方針
 - Next.js（App Router）+ TypeScript + Tailwind CSS を前提とします。
 - すべての新規コードはTypeScriptで記述してください。

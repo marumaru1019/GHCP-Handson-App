@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 demo
+
+src/app/kanban/
+src/components/kanban/
+src/types/kanban/

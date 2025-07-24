@@ -1,6 +1,6 @@
 'use client';
 
-import { TodoFilter as TodoFilterType } from '@/types/todo';
+import { TodoFilter as TodoFilterType } from '@/types';
 
 interface TodoFilterProps {
   currentFilter: TodoFilterType;
@@ -10,12 +10,12 @@ interface TodoFilterProps {
   onClearCompleted: () => void;
 }
 
-export function TodoFilter({ 
-  currentFilter, 
-  onFilterChange, 
-  activeTodosCount, 
+export function TodoFilter({
+  currentFilter,
+  onFilterChange,
+  activeTodosCount,
   completedTodosCount,
-  onClearCompleted 
+  onClearCompleted
 }: TodoFilterProps) {
   const filters: { key: TodoFilterType; label: string }[] = [
     { key: 'all', label: 'すべて' },
@@ -49,11 +49,11 @@ export function TodoFilter({
           </button>
         ))}
       </div>
-      
+
       {completedTodosCount > 0 && (
         <button
           onClick={onClearCompleted}
-          className="px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-100 
+          className="px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-100
                      dark:hover:bg-red-900 rounded-lg transition-colors duration-200"
         >
           完了済みを削除

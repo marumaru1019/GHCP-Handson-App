@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TodoFilter } from './TodoFilter';
-import type { TodoFilter as TodoFilterType } from '@/types/todo';
+import type { TodoFilter as TodoFilterType } from '@/types';
 
 describe('TodoFilter', () => {
   const defaultProps = {
@@ -17,12 +17,12 @@ describe('TodoFilter', () => {
 
   it('初期レンダリングでフィルターボタンとカウントが表示される', () => {
     render(<TodoFilter {...defaultProps} />);
-    expect(screen.getByText('すべて')).toBeInTheDocument();
-    expect(screen.getByText('アクティブ')).toBeInTheDocument();
-    expect(screen.getByText('完了済み')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument(); // active count
-    expect(screen.getByText('3')).toBeInTheDocument(); // completed count
-    expect(screen.getByText('完了済みを削除')).toBeInTheDocument();
+    expect(screen.getByText('すべて')).toBeTruthy();
+    expect(screen.getByText('アクティブ')).toBeTruthy();
+    expect(screen.getByText('完了済み')).toBeTruthy();
+    expect(screen.getByText('2')).toBeTruthy(); // active count
+    expect(screen.getByText('3')).toBeTruthy(); // completed count
+    expect(screen.getByText('完了済みを削除')).toBeTruthy();
   });
 
   it('フィルターボタンをクリックするとonFilterChangeが呼ばれる', () => {
@@ -43,8 +43,8 @@ describe('TodoFilter', () => {
     render(
       <TodoFilter {...defaultProps} activeTodosCount={0} completedTodosCount={0} />
     );
-    expect(screen.queryByText('0')).not.toBeInTheDocument();
-    expect(screen.queryByText('完了済みを削除')).not.toBeInTheDocument();
+    expect(screen.queryByText('0')).toBeNull();
+    expect(screen.queryByText('完了済みを削除')).toBeNull();
   });
 
   it('currentFilterに応じて選択中のボタンにクラスが付与される', () => {
