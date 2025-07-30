@@ -1,48 +1,103 @@
-# コード規約（Coding Guidelines）
+# GitHub Copilot Instructions - Todo App
 
-## 大前提
-- 余計なコメントアウトはしないでください。
+## プロジェクト概要
+Next.js 15 (App Router) + TypeScript + Tailwind CSS で構築されたモダンなTodoアプリケーション。
 
-## 1. 基本方針
-- Next.js（App Router）+ TypeScript + Tailwind CSS を前提とします。
-- すべての新規コードはTypeScriptで記述してください。
-- 機能ごとに小さく、責任範囲の明確な関数・コンポーネントを作成してください。
-- Reactの最新ベストプラクティス（関数コンポーネント、Hooks等）を推奨します。
+## アーキテクチャ特徴
 
-## 2. ファイル構成
-- `src/components/`：UIコンポーネント
-- `src/app/`：App Router用ページ
-- `src/lib/`, `src/utils/`：ユーティリティ
-- `src/types/`：型定義
-- `public/`：静的アセット
+### データ管理パターン
+- **ローカルストレージ中心**：`localStorage`でTodoデータとフィルター状態を永続化
+- **状態管理**：React Hooksのみ（Redux等は使用しない）
+- **データ同期**：`isInitialLoad`フラグで初回読み込み時の保存を制御
 
-## 3. 命名規則
-- 変数・関数：キャメルケース（例：todoList, handleClick）
-- コンポーネント・型：パスカルケース（例：TodoItem, TodoFilter）
-- ファイル名：コンポーネント名と一致させる
+### コンポーネント設計
+- **機能別ディレクトリ構成**：`src/components/list/`でリスト機能を集約
+- **Props型安全性**：すべてのコンポーネントに明示的な型定義
+- **モーダル管理**：親コンポーネント（TodoApp）で状態管理、子に伝播
 
-## 4. コメントアウト規則
-- **可視性・保守性向上のため、コメントは積極的に活用すること。**
-- 複雑なロジックや意図が伝わりにくい箇所には、JSDoc形式または行コメントで説明を加える。
-- コメントは最新状態を保ち、不要になったら必ず削除する。
-- コメントの書式：
-  - 行コメントは`//`、ブロックコメントは`/* ... */`を使用。
-  - JSDocは`/** ... */`で記述。
-  - コメントはコードの直上または同じ行に記載し、内容が明確になるよう簡潔に書く。
-- 一時的なデバッグやTODOは`// TODO:`や`// FIXME:`を明記し、後で必ず対応する。
-- コメントアウトの冒頭に用途に応じた絵文字を付けて可視性を高めること（例：// 📝 説明、// 🐞 デバッグ、// 🚩 注意点、// 🔥 一時対応 など）。**
+### 型システム
+- **共通型**：`src/types/shared/todo.ts`に基盤型定義
+- **機能別型**：`src/types/list/`、`src/types/kanban/`で機能固有型
+- **エクスポート統合**：`src/types/index.ts`で一元管理
 
-## 5. スタイル・書式
-- Tailwind CSSのユーティリティクラスを優先し、カスタムCSSは最小限に。
-- インデントはスペース2つ。
-- セミコロンは必須。
-- 1行の長さは120文字以内を目安とする。
+## 開発ワークフロー
 
-## 6. 型・Props
-- すべてのPropsや関数引数・戻り値に型を明示する。
-- 型定義は`src/types/`またはコンポーネントと同じディレクトリに配置。
+### 必須コマンド
+```bash
+# 開発サーバー（Turbopack使用）
+pnpm dev
 
-## 7. その他
-- ESLintで検出された警告・エラーは必ず修正する。
-- PR時は必ずテストを実行し、カバレッジを維持する。
-- パフォーマンス・SEOも考慮し、必要に応じて最適化を行う。
+# テスト実行
+pnpm test
+
+# ビルド
+pnpm build
+```
+
+### テスト戦略
+- **Jest + React Testing Library**：`jest.config.js`でTypeScript対応設定済み
+- **パスエイリアス**：`@/`でsrcディレクトリを参照
+- **setupTests.ts**：テスト環境初期化
+
+## プロジェクト固有パターン
+
+### 絵文字コメント規約（必須）
+コメントの視認性向上のため、用途別絵文字を使用：
+- `// 📝 説明・仕様`: 重要な説明
+- `// 🐞 デバッグ`: デバッグ用ログ
+- `// 🔄 状態管理`: 状態変更の説明
+- `// 📊 計算・分析`: 数値計算やデータ処理
+- `// 🚫 制約・注意`: 制限事項や注意点
+
+### ローカルストレージパターン
+```typescript
+// 📝 保存キー定数定義
+const STORAGE_KEY = 'todos';
+
+// 🔄 初回読み込み制御
+const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+// 📦 データ復元時の型安全性
+const todosWithDates = data.map(todo => ({
+  ...todo,
+  createdAt: new Date(todo.createdAt)
+}));
+```
+
+### モーダル実装パターン
+```typescript
+// 📝 モーダル状態管理
+const [modal, setModal] = useState<{
+  isOpen: boolean;
+  id: string;
+  title: string;
+}>({ isOpen: false, id: '', title: '' });
+
+// 📝 モーダル表示・非表示処理
+const showModal = (id: string, title: string) => {
+  setModal({ isOpen: true, id, title });
+};
+```
+
+### 日時ユーティリティ活用
+- **相対時間表示**：`getRelativeTime()`で「3分前」「2時間前」形式
+- **日付フォーマット**：`formatDate()`で統一された日付表示
+
+## 品質保証
+
+### ESLint + TypeScript
+- **設定**：`eslint.config.mjs`でNext.js標準設定
+- **型チェック**：`strict: true`で厳密型チェック有効
+- **パスエイリアス**：`@/`でインポートパス簡潔化
+
+### コーディング規約
+- **コメント必須**：複雑なロジックには絵文字付きコメント
+- **Tailwind優先**：カスタムCSS最小限
+- **Props型定義**：すべてのコンポーネントプロパティに型指定
+- **エラーハンドリング**：localStorage操作時はtry-catch必須
+
+## 重要ファイル
+- `src/components/list/TodoApp.tsx`: メインアプリケーションロジック
+- `src/types/shared/todo.ts`: 基盤型定義
+- `src/utils/dateUtils.ts`: 日時処理ユーティリティ
+- `jest.config.js`: テスト環境設定

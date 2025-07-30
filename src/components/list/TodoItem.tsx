@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { Todo, Priority, TodoStatus } from '@/types';
+import { getRelativeTime, getDetailedDateTime } from '@/utils';
 import { AlertCircle, Circle, CheckCircle, Edit3, Trash2 } from 'lucide-react';
 
 interface TodoItemProps {
   todo: Todo;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onRequestDelete: (id: string, title: string) => void; // 📝 削除確認モーダル表示用
   onEdit: (id: string, newText: string) => void;
   onUpdatePriority: (id: string, priority: Priority) => void;
   onUpdateStatus: (id: string, status: TodoStatus) => void;
@@ -17,6 +19,7 @@ export function TodoItem({
   todo,
   onToggle,
   onDelete,
+  onRequestDelete, // 📝 削除確認モーダル表示用
   onEdit,
   onUpdatePriority,
   onUpdateStatus
@@ -132,9 +135,9 @@ export function TodoItem({
                      border transition-colors hover:opacity-80 ${getStatusStyle(todo.status || 'todo')}`}
           title="クリックでステータスを変更"
         >
-          {todo.status === 'todo' && '未着手'}
-          {todo.status === 'in-progress' && '進行中'}
-          {todo.status === 'done' && '完了'}
+          {(todo.status || 'todo') === 'todo' && '未着手'}
+          {(todo.status || 'todo') === 'in-progress' && '進行中'}
+          {(todo.status || 'todo') === 'done' && '完了'}
         </button>
 
         {/* 🛠️ アクションボタン */}
@@ -148,7 +151,7 @@ export function TodoItem({
             <Edit3 size={14} />
           </button>
           <button
-            onClick={() => onDelete(todo.id)}
+            onClick={() => onRequestDelete(todo.id, todo.text)} // 📝 確認モーダル表示に変更
             className="p-1 text-gray-400 hover:text-red-500 dark:text-gray-500
                        dark:hover:text-red-400 transition-colors rounded"
             title="削除"
@@ -187,14 +190,11 @@ export function TodoItem({
       )}
 
       {/* 📅 作成日時 */}
-      <div className="text-xs text-gray-500 dark:text-gray-400 border-t pt-2 border-gray-200 dark:border-gray-600">
-        {new Date(todo.createdAt).toLocaleDateString('ja-JP', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        })}
+      <div
+        className="text-xs text-gray-500 dark:text-gray-400 border-t pt-2 border-gray-200 dark:border-gray-600"
+        title={getDetailedDateTime(todo.createdAt)}
+      >
+        {getRelativeTime(todo.createdAt)}
       </div>
     </div>
   );

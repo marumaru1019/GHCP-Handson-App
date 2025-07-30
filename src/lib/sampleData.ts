@@ -52,6 +52,22 @@ export const generateSampleTodos = (): Todo[] => {
       status: 'todo',
       priority: 'medium',
     },
+    {
+      id: 'sample-7',
+      text: 'テストコードの実装',
+      completed: false,
+      createdAt: new Date(Date.now() - 30 * 60 * 1000), // 30分前
+      status: 'todo',
+      priority: 'high',
+    },
+    {
+      id: 'sample-8',
+      text: 'ドキュメント更新',
+      completed: false,
+      createdAt: new Date(Date.now() - 5 * 60 * 1000), // 5分前
+      status: 'in-progress',
+      priority: 'low',
+    },
   ];
 
   return sampleTodos;

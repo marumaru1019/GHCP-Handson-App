@@ -1,15 +1,37 @@
 ---
-mode: 'agent'
-tools: ['changes', 'codebase', 'editFiles']
-description: 'Generate Jest + Testing Library test for a React component'
+mode: agent
+description: "Reactコンポーネントテスト雛形生成"
 ---
 
-# React コンポーネント向けテスト
+# Reactコンポーネントテスト雛形生成
 
-対象コンポーネント：`${input:componentName:MyComponent}` をテストします。
-既に、テストファイルが存在する場合は、最新の仕様に合わせて更新してください。
-テストファイルを作成したら作ったテストを実行してください。
+${input:componentName:コンポーネント名} のテストファイルを生成してください。
 
-- 初期レンダリングテスト  
-- ユーザーインタラクション（クリック、入力）テスト  
-- Props のバリデーションテスト  
+## 生成要件
+- React Testing Library使用
+- TypeScript対応
+- describe/it構造で整理
+- モックとスパイの適切な活用
+
+## 基本テストケース
+### 正常系テスト
+- コンポーネントの正常なレンダリング
+- Propsによる表示内容の変化
+- ユーザーインタラクションの正常動作
+- 状態変更の正常フロー
+
+### 異常系テスト
+- 無効なPropsでのエラーハンドリング
+- ネットワークエラー時の挙動
+- 予期しない状態での動作確認
+- エッジケースでの安全性
+
+### アクセシビリティテスト
+- ARIA属性の適切な設定
+- キーボードナビゲーション
+- フォーカス管理
+- スクリーンリーダー対応
+
+## ファイル配置
+- テストファイル: src/components/__tests__/${componentName}.test.tsx
+- 適切なimport文とsetup

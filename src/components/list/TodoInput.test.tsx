@@ -39,6 +39,28 @@ describe('TodoInput', () => {
     expect(input.value).toBe('   ');
   });
 
+  it('フォーム送信時、空白のみの入力では何も起こらない', () => {
+    const { input, onAddTodo } = setup();
+    fireEvent.change(input, { target: { value: '   ' } });
+
+    // 📝 フォームのsubmitイベントをシミュレート（trim後が空文字のケース）
+    const form = input.closest('form');
+    fireEvent.submit(form!);
+
+    expect(onAddTodo).not.toHaveBeenCalled();
+    expect(input.value).toBe('   '); // 📝 値はクリアされない
+  });
+
+  it('空文字の場合もonAddTodoが呼ばれない', () => {
+    const { input, onAddTodo } = setup();
+    // 📝 空文字のまま送信
+    const form = input.closest('form');
+    fireEvent.submit(form!);
+
+    expect(onAddTodo).not.toHaveBeenCalled();
+    expect(input.value).toBe(''); // 📝 空文字のまま
+  });
+
   it('EnterキーでonAddTodoが呼ばれる', () => {
     const { input, onAddTodo } = setup();
     fireEvent.change(input, { target: { value: 'エンター追加' } });

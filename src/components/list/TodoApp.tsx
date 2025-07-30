@@ -6,6 +6,7 @@ import { Todo, TodoFilter } from '@/types';
 import { TodoItem } from './TodoItem';
 import { TodoInput } from './TodoInput';
 import { TodoFilter as TodoFilterComponent } from './TodoFilter';
+import { DeleteConfirmModal } from './DeleteConfirmModal'; // 📝 削除確認モーダルを追加
 import { FileText, LayoutDashboard, Trash2 } from 'lucide-react';
 
 const TODOS_STORAGE_KEY = 'todos';
@@ -15,6 +16,17 @@ export function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [filter, setFilter] = useState<TodoFilter>('all');
   const [isInitialLoad, setIsInitialLoad] = useState(true); // 🔄 初回読み込みフラグ
+
+  // 📝 削除確認モーダルの状態管理
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    todoId: string;
+    todoTitle: string;
+  }>({
+    isOpen: false,
+    todoId: '',
+    todoTitle: ''
+  });
 
   useEffect(() => {
     try {
@@ -97,6 +109,34 @@ export function TodoApp() {
 
   const deleteTodo = (id: string) => {
     setTodos(prev => prev.filter(todo => todo.id !== id));
+  };
+
+  // 📝 削除確認モーダル表示処理
+  const handleRequestDelete = (id: string, title: string) => {
+    setDeleteModal({
+      isOpen: true,
+      todoId: id,
+      todoTitle: title
+    });
+  };
+
+  // 📝 削除確認処理
+  const handleConfirmDelete = () => {
+    deleteTodo(deleteModal.todoId);
+    setDeleteModal({
+      isOpen: false,
+      todoId: '',
+      todoTitle: ''
+    });
+  };
+
+  // 📝 削除キャンセル処理
+  const handleCancelDelete = () => {
+    setDeleteModal({
+      isOpen: false,
+      todoId: '',
+      todoTitle: ''
+    });
   };
 
   const editTodo = (id: string, newText: string) => {
@@ -209,6 +249,7 @@ export function TodoApp() {
                 todo={todo}
                 onToggle={toggleTodo}
                 onDelete={deleteTodo}
+                onRequestDelete={handleRequestDelete} // 📝 削除確認モーダル表示用
                 onEdit={editTodo}
                 onUpdatePriority={updatePriority}
                 onUpdateStatus={updateStatus}
@@ -239,6 +280,14 @@ export function TodoApp() {
           </>
         )}
       </div>
+
+      {/* 📝 削除確認モーダル */}
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        todoTitle={deleteModal.todoTitle}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 }
