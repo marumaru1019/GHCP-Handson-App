@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 
 export type Theme = 'light' | 'dark';
 
@@ -8,11 +8,14 @@ export type Theme = 'light' | 'dark';
 const THEME_STORAGE_KEY = 'theme';
 
 export function useTheme() {
+  // 📝 SSR時は常にlight、クライアント側で実際の値に更新
   const [theme, setTheme] = useState<Theme>('light');
   const [isInitialized, setIsInitialized] = useState(false);
 
   // 📝 テーマをDOMに適用する関数
   const applyTheme = useCallback((newTheme: Theme) => {
+    if (typeof window === 'undefined') return; // 📝 SSR対応
+
     const root = document.documentElement;
 
     console.log('🎨 テーマ適用開始:', newTheme);
@@ -37,8 +40,10 @@ export function useTheme() {
     }
   }, []);
 
-  // 📝 初回読み込み時にテーマを設定
-  useEffect(() => {
+  // 📝 初回読み込み時にテーマを設定（SSR対応）
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined') return; // 📝 SSR対応
+
     try {
       console.log('🚀 useTheme初期化開始');
       // 📦 ローカルストレージから設定を読み込み
@@ -69,6 +74,13 @@ export function useTheme() {
       setIsInitialized(true);
     }
   }, [applyTheme]);
+
+  // 📝 初期化完了フラグを設定
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsInitialized(true);
+    }
+  }, []);
 
   // 📝 テーマを切り替える関数
   const toggleTheme = useCallback(() => {
