@@ -1,2 +1,2 @@
 // 📝 共通コンポーネントのエクスポート
-// 将来的に共通コンポーネントがあればここに追加
+export { ThemeToggleButton } from './ThemeToggleButton';

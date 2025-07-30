@@ -40,7 +40,7 @@ export function DeleteConfirmModal({
   if (!isOpen) return null;
 
   // 📝 バックドロップクリックでモーダルを閉じる
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onCancel();
     }
@@ -54,18 +54,18 @@ export function DeleteConfirmModal({
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full transform transition-all">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full transform transition-all">
         {/* 📝 ヘッダー */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-3">
             <AlertTriangle className="text-red-500" size={24} />
-            <h2 id="modal-title" className="text-lg font-semibold text-gray-900">
+            <h2 id="modal-title" className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               削除の確認
             </h2>
           </div>
           <button
             onClick={onCancel}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
             aria-label="モーダルを閉じる"
           >
             <X size={20} />
@@ -74,24 +74,24 @@ export function DeleteConfirmModal({
 
         {/* 📝 コンテンツ */}
         <div className="p-6">
-          <p className="text-gray-700 mb-4">
+          <p className="text-gray-700 dark:text-gray-300 mb-4">
             以下のTodoを削除しますか？
           </p>
-          <div className="bg-gray-50 p-3 rounded-md border-l-4 border-red-500 mb-6">
-            <p className="font-medium text-gray-900 break-words">
+          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-md border-l-4 border-red-500 mb-6">
+            <p className="font-medium text-gray-900 dark:text-gray-100 break-words">
               {todoTitle}
             </p>
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             🚩 この操作は取り消せません。
           </p>
         </div>
 
         {/* 📝 フッター */}
-        <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
+        <div className="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
           >
             <XIcon size={16} className="inline mr-2" />
             キャンセル

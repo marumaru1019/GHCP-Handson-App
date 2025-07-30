@@ -32,6 +32,21 @@ Object.defineProperty(global, 'crypto', {
   }
 });
 
+// 📝 window.matchMediaのモック（ダークモード用）
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
 describe('TodoApp 削除確認フロー統合テスト', () => {
   beforeEach(() => {
     // 📝 各テスト前にローカルストレージをクリア
@@ -610,6 +625,64 @@ describe('TodoApp 削除確認フロー統合テスト', () => {
       expect(parsedTodos.some((todo: Todo) => todo.text === '削除対象のタスク')).toBe(false);
       expect(parsedTodos.some((todo: Todo) => todo.text === '最初のタスク')).toBe(true);
       expect(parsedTodos.some((todo: Todo) => todo.text === '最後のタスク')).toBe(true);
+    });
+  });
+
+  // 📝 ダークモード統合テスト
+  describe('ダークモード統合テスト', () => {
+    it('ダークモード切り替えボタンが表示される', () => {
+      render(<TodoApp />);
+
+      // 📝 ダークモード切り替えボタンが存在することを確認
+      const themeButton = screen.getByRole('button', { name: /ダークモードに切り替え|ライトモードに切り替え/ });
+      expect(themeButton).toBeInTheDocument();
+    });
+
+    it('ダークモード切り替えボタンがクリックできる', async () => {
+      const user = userEvent.setup();
+      render(<TodoApp />);
+
+      // 📝 ダークモード切り替えボタンをクリック
+      const themeButton = screen.getByRole('button', { name: /ダークモードに切り替え|ライトモードに切り替え/ });
+      await user.click(themeButton);
+
+      // 📝 エラーが発生しないことを確認
+      expect(themeButton).toBeInTheDocument();
+    });
+
+    it('ダークモードでもTodo機能が正常に動作する', async () => {
+      const user = userEvent.setup();
+      render(<TodoApp />);
+
+      // 📝 ダークモードに切り替え
+      const themeButton = screen.getByRole('button', { name: /ダークモードに切り替え/ });
+      if (themeButton) {
+        await user.click(themeButton);
+      }
+
+      // 📝 Todo追加が正常に動作することを確認
+      const input = screen.getByPlaceholderText('新しいタスクを入力してください...');
+      await user.type(input, 'ダークモードテスト');
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(screen.getByText('ダークモードテスト')).toBeInTheDocument();
+      });
+
+      // 📝 削除も正常に動作することを確認
+      const deleteButton = screen.getByTitle('削除');
+      await user.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByRole('button', { name: /削除する/ }));
+
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(screen.queryByText('ダークモードテスト')).not.toBeInTheDocument();
+      });
     });
   });
 });
