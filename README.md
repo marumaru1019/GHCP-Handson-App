@@ -2,7 +2,7 @@
 
 GitHub CopilotとNext.jsを使って構築されたモダンなTodoアプリケーションです。
 
-## 🚀 Tech Stack
+## 🚀 技術スタック
 
 - **Framework**: Next.js 15 with App Router
 - **Language**: TypeScript
@@ -15,7 +15,7 @@ GitHub CopilotとNext.jsを使って構築されたモダンなTodoアプリケ�
 ## 🛠️ セットアップ & 立ち上げ方
 
 ### 前提条件
-- Node.js 18.0以上
+- Node.js 20.0以上
 - pnpm (推奨) または npm
 
 ### 1. リポジトリのクローン
