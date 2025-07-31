@@ -8,7 +8,6 @@ import { AlertCircle, Circle, CheckCircle, Edit3, Trash2 } from 'lucide-react';
 interface TodoItemProps {
   todo: Todo;
   onToggle: (id: string) => void;
-  onDelete: (id: string) => void;
   onRequestDelete: (id: string, title: string) => void; // 📝 削除確認モーダル表示用
   onEdit: (id: string, newText: string) => void;
   onUpdatePriority: (id: string, priority: Priority) => void;
@@ -18,7 +17,6 @@ interface TodoItemProps {
 export function TodoItem({
   todo,
   onToggle,
-  onDelete,
   onRequestDelete, // 📝 削除確認モーダル表示用
   onEdit,
   onUpdatePriority,

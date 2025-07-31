@@ -15,7 +15,6 @@ describe('TodoItem', () => {
       status: 'todo' as TodoStatus
     } as Todo,
     onToggle: jest.fn(),
-    onDelete: jest.fn(),
     onRequestDelete: jest.fn(),
     onEdit: jest.fn(),
     onUpdatePriority: jest.fn(),

@@ -348,7 +348,6 @@ export function SearchApp() {
                 key={todo.id}
                 todo={todo}
                 onToggle={handleToggleTodo}
-                onDelete={handleDeleteTodo}
                 onRequestDelete={(id, title) => {
                   // 📝 SearchAppでは確認なしで即座に削除
                   console.log(`削除対象: ${title}`); // 🐞 デバッグ用ログ

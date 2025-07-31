@@ -256,7 +256,6 @@ export function TodoApp() {
                   key={todo.id}
                   todo={todo}
                   onToggle={toggleTodo}
-                  onDelete={deleteTodo}
                   onRequestDelete={handleRequestDelete} // 📝 削除確認モーダル表示用
                   onEdit={editTodo}
                   onUpdatePriority={updatePriority}
