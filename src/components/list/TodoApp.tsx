@@ -6,6 +6,7 @@ import { Todo, TodoFilter } from '@/types';
 import { TodoItem } from './TodoItem';
 import { TodoInput } from './TodoInput';
 import { TodoFilter as TodoFilterComponent } from './TodoFilter';
+import { ThemeToggle } from '@/components/shared';
 import { FileText, LayoutDashboard, Trash2 } from 'lucide-react';
 
 const TODOS_STORAGE_KEY = 'todos';
@@ -170,16 +171,21 @@ export function TodoApp() {
           </h1>
         </div>
 
-        {/* 🔗 カンバンボードへのリンク */}
-        <Link
-          href="/kanban"
-          className="px-4 py-2 bg-[#ff0033] hover:bg-[#e6002e] text-white rounded-lg
-                   font-medium transition-colors duration-200 flex items-center gap-2
-                   focus:outline-none focus:ring-2 focus:ring-[#ff0033] focus:ring-offset-2"
-        >
-          <LayoutDashboard size={18} />
-          カンバン表示
-        </Link>
+        {/* 🎨 テーマ切り替えとカンバンボードリンク */}
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          
+          {/* 🔗 カンバンボードへのリンク */}
+          <Link
+            href="/kanban"
+            className="px-4 py-2 bg-[#ff0033] hover:bg-[#e6002e] text-white rounded-lg
+                     font-medium transition-colors duration-200 flex items-center gap-2
+                     focus:outline-none focus:ring-2 focus:ring-[#ff0033] focus:ring-offset-2"
+          >
+            <LayoutDashboard size={18} />
+            カンバン表示
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
