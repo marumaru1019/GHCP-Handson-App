@@ -308,14 +308,14 @@ describe('TodoItem', () => {
       setup(createMockTodo({ completed: true }));
       
       const textDiv = screen.getByText('テストタスク');
-      expect(textDiv.className).toMatch(/line-through/);
+      expect(textDiv).toHaveClass('line-through');
     });
 
     it('未完了タスクは通常のスタイルが適用される', () => {
       setup(createMockTodo({ completed: false }));
       
       const textDiv = screen.getByText('テストタスク');
-      expect(textDiv.className).not.toMatch(/line-through/);
+      expect(textDiv).not.toHaveClass('line-through');
     });
   });
 
