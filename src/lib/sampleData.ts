@@ -1,6 +1,7 @@
 // 📝 開発・テスト用のサンプルデータ生成ユーティリティ
 
 import { Todo } from '@/types';
+import { logger } from '@/lib';
 
 export const generateSampleTodos = (): Todo[] => {
   const sampleTodos: Todo[] = [
@@ -64,7 +65,7 @@ export const loadSampleData = () => {
     // 🚫 既存データの確認はしない、常に新しいサンプルデータを返す
     return sampleData;
   } catch (error) {
-    console.error('サンプルデータの生成に失敗しました:', error);
+    logger.error('サンプルデータの生成に失敗しました:', error);
     return null;
   }
 };

@@ -7,6 +7,7 @@ import { TodoItem } from './TodoItem';
 import { TodoInput } from './TodoInput';
 import { TodoFilter as TodoFilterComponent } from './TodoFilter';
 import { FileText, LayoutDashboard, Trash2 } from 'lucide-react';
+import { logger } from '@/lib';
 
 const TODOS_STORAGE_KEY = 'todos';
 const FILTER_STORAGE_KEY = 'todoFilter';
@@ -18,22 +19,22 @@ export function TodoApp() {
 
   useEffect(() => {
     try {
-      console.log('🔄 TodoApp: データ読み込み開始'); // 🐞 デバッグログ
+      logger.debug('🔄 TodoApp: データ読み込み開始'); // 🐞 デバッグログ
       const storedTodos = localStorage.getItem(TODOS_STORAGE_KEY);
       if (storedTodos) {
         const parsedTodos = JSON.parse(storedTodos);
-        console.log('📦 TodoApp: 保存されたデータ:', parsedTodos.length, '件'); // 🐞 デバッグログ
+        logger.debug('📦 TodoApp: 保存されたデータ:', parsedTodos.length, '件'); // 🐞 デバッグログ
         // 📅 日付オブジェクトを復元 & カンバン用プロパティを追加
-        const todosWithDates = parsedTodos.map((todo: any) => ({
+        const todosWithDates = parsedTodos.map((todo: Todo & { createdAt: string }) => ({
           ...todo,
           createdAt: new Date(todo.createdAt),
           status: todo.status || (todo.completed ? 'done' : 'todo'), // 📝 既存データの互換性
           priority: todo.priority || 'medium', // 📝 デフォルト優先度
         }));
         setTodos(todosWithDates);
-        console.log('✅ TodoApp: データ読み込み完了:', todosWithDates.length, '件'); // 🐞 デバッグログ
+        logger.debug('✅ TodoApp: データ読み込み完了:', todosWithDates.length, '件'); // 🐞 デバッグログ
       } else {
-        console.log('📭 TodoApp: 保存されたデータなし'); // 🐞 デバッグログ
+        logger.debug('📭 TodoApp: 保存されたデータなし'); // 🐞 デバッグログ
       }
 
       const storedFilter = localStorage.getItem(FILTER_STORAGE_KEY);
@@ -43,7 +44,7 @@ export function TodoApp() {
 
       setIsInitialLoad(false); // 🔄 初回読み込み完了
     } catch (error) {
-      console.error('ローカルストレージからのデータ読み込みに失敗しました:', error);
+      logger.error('ローカルストレージからのデータ読み込みに失敗しました:', error);
       setIsInitialLoad(false); // 🔄 エラー時も初回読み込み完了とする
     }
   }, []);
@@ -53,11 +54,11 @@ export function TodoApp() {
     if (isInitialLoad) return;
 
     try {
-      console.log('💾 TodoApp: データを保存中...', todos.length, '件'); // 🐞 デバッグログ
+      logger.debug('💾 TodoApp: データを保存中...', todos.length, '件'); // 🐞 デバッグログ
       localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify(todos));
-      console.log('✅ TodoApp: データ保存完了'); // 🐞 デバッグログ
+      logger.debug('✅ TodoApp: データ保存完了'); // 🐞 デバッグログ
     } catch (error) {
-      console.error('❌ TodoApp: ローカルストレージへのデータ保存に失敗しました:', error);
+      logger.error('❌ TodoApp: ローカルストレージへのデータ保存に失敗しました:', error);
     }
   }, [todos, isInitialLoad]);
 
@@ -65,7 +66,7 @@ export function TodoApp() {
     try {
       localStorage.setItem(FILTER_STORAGE_KEY, filter);
     } catch (error) {
-      console.error('フィルター設定の保存に失敗しました:', error);
+      logger.error('フィルター設定の保存に失敗しました:', error);
     }
   }, [filter]);
 
@@ -137,15 +138,15 @@ export function TodoApp() {
 
   const clearAllData = () => {
     if (window.confirm('すべてのデータを削除しますか？この操作は元に戻せません。')) {
-      console.log('🗑️ TodoApp: 全データクリア実行'); // 🐞 デバッグログ
+      logger.debug('🗑️ TodoApp: 全データクリア実行'); // 🐞 デバッグログ
       setTodos([]);
       setFilter('all');
       try {
         localStorage.removeItem(TODOS_STORAGE_KEY);
         localStorage.removeItem(FILTER_STORAGE_KEY);
-        console.log('✅ TodoApp: ローカルストレージクリア完了'); // 🐞 デバッグログ
+        logger.debug('✅ TodoApp: ローカルストレージクリア完了'); // 🐞 デバッグログ
       } catch (error) {
-        console.error('❌ TodoApp: ローカルストレージのクリアに失敗しました:', error);
+        logger.error('❌ TodoApp: ローカルストレージのクリアに失敗しました:', error);
       }
     }
   };
