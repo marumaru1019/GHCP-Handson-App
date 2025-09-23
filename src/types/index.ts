@@ -5,4 +5,4 @@ export * from './shared/todo';
 export * from './list/filter';
 
 // 📝 看板用型定義のエクスポート
-export * from './kanban/column';
+// export * from './kanban/column'; // 🚩 Kanban types not yet implemented

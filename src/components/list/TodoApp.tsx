@@ -24,7 +24,7 @@ export function TodoApp() {
         const parsedTodos = JSON.parse(storedTodos);
         console.log('📦 TodoApp: 保存されたデータ:', parsedTodos.length, '件'); // 🐞 デバッグログ
         // 📅 日付オブジェクトを復元 & カンバン用プロパティを追加
-        const todosWithDates = parsedTodos.map((todo: any) => ({
+        const todosWithDates = parsedTodos.map((todo: Omit<Todo, 'createdAt'> & { createdAt: string }) => ({
           ...todo,
           createdAt: new Date(todo.createdAt),
           status: todo.status || (todo.completed ? 'done' : 'todo'), // 📝 既存データの互換性

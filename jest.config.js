@@ -17,4 +17,10 @@ module.exports = {
       }
     }]
   },
+  // 📝 Playwrightテストを除外
+  testPathIgnorePatterns: [
+    '<rootDir>/.next/',
+    '<rootDir>/node_modules/',
+    '<rootDir>/e2e/',
+  ],
 };
