@@ -11,6 +11,7 @@ export const generateSampleTodos = (): Todo[] => {
       createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1日前
       status: 'todo',
       priority: 'high',
+      tags: ['仕事', '企画'],
     },
     {
       id: 'sample-2',
@@ -19,6 +20,7 @@ export const generateSampleTodos = (): Todo[] => {
       createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12時間前
       status: 'in-progress',
       priority: 'high',
+      tags: ['仕事', '開発', 'API'],
     },
     {
       id: 'sample-3',
@@ -27,6 +29,7 @@ export const generateSampleTodos = (): Todo[] => {
       createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6時間前
       status: 'in-progress',
       priority: 'medium',
+      tags: ['デザイン', '個人'],
     },
     {
       id: 'sample-4',
@@ -35,6 +38,7 @@ export const generateSampleTodos = (): Todo[] => {
       createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000), // 2日前
       status: 'done',
       priority: 'medium',
+      tags: ['仕事', '設計'],
     },
     {
       id: 'sample-5',
@@ -43,6 +47,7 @@ export const generateSampleTodos = (): Todo[] => {
       createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000), // 3日前
       status: 'done',
       priority: 'low',
+      tags: ['開発', '学習'],
     },
     {
       id: 'sample-6',
@@ -51,6 +56,7 @@ export const generateSampleTodos = (): Todo[] => {
       createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2時間前
       status: 'todo',
       priority: 'medium',
+      tags: ['仕事', '開発'],
     },
   ];
 

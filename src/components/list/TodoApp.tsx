@@ -6,14 +6,17 @@ import { Todo, TodoFilter } from '@/types';
 import { TodoItem } from './TodoItem';
 import { TodoInput } from './TodoInput';
 import { TodoFilter as TodoFilterComponent } from './TodoFilter';
+import { TagFilter } from './TagFilter';
 import { FileText, LayoutDashboard, Trash2 } from 'lucide-react';
 
 const TODOS_STORAGE_KEY = 'todos';
 const FILTER_STORAGE_KEY = 'todoFilter';
+const SELECTED_TAG_STORAGE_KEY = 'selectedTag';
 
 export function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [filter, setFilter] = useState<TodoFilter>('all');
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true); // 🔄 初回読み込みフラグ
 
   useEffect(() => {
@@ -24,7 +27,7 @@ export function TodoApp() {
         const parsedTodos = JSON.parse(storedTodos);
         console.log('📦 TodoApp: 保存されたデータ:', parsedTodos.length, '件'); // 🐞 デバッグログ
         // 📅 日付オブジェクトを復元 & カンバン用プロパティを追加
-        const todosWithDates = parsedTodos.map((todo: any) => ({
+        const todosWithDates = parsedTodos.map((todo: Omit<Todo, 'createdAt'> & { createdAt: string }) => ({
           ...todo,
           createdAt: new Date(todo.createdAt),
           status: todo.status || (todo.completed ? 'done' : 'todo'), // 📝 既存データの互換性
@@ -39,6 +42,11 @@ export function TodoApp() {
       const storedFilter = localStorage.getItem(FILTER_STORAGE_KEY);
       if (storedFilter && ['all', 'active', 'completed'].includes(storedFilter)) {
         setFilter(storedFilter as TodoFilter);
+      }
+
+      const storedSelectedTag = localStorage.getItem(SELECTED_TAG_STORAGE_KEY);
+      if (storedSelectedTag) {
+        setSelectedTag(storedSelectedTag);
       }
 
       setIsInitialLoad(false); // 🔄 初回読み込み完了
@@ -69,7 +77,19 @@ export function TodoApp() {
     }
   }, [filter]);
 
-  const addTodo = (text: string) => {
+  useEffect(() => {
+    try {
+      if (selectedTag) {
+        localStorage.setItem(SELECTED_TAG_STORAGE_KEY, selectedTag);
+      } else {
+        localStorage.removeItem(SELECTED_TAG_STORAGE_KEY);
+      }
+    } catch (error) {
+      console.error('選択タグの保存に失敗しました:', error);
+    }
+  }, [selectedTag]);
+
+  const addTodo = (text: string, tags?: string[]) => {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
       text: text.trim(),
@@ -77,6 +97,7 @@ export function TodoApp() {
       createdAt: new Date(),
       status: 'todo', // 📝 カンバン用のステータスを追加
       priority: 'medium', // 📝 デフォルト優先度を追加
+      tags: tags, // 📝 タグを追加
     };
     setTodos(prev => [newTodo, ...prev]);
   };
@@ -150,10 +171,27 @@ export function TodoApp() {
     }
   };
 
+  // 🏷️ 使用中のタグ一覧を取得
+  const getAllTags = () => {
+    const tagSet = new Set<string>();
+    todos.forEach(todo => {
+      todo.tags?.forEach(tag => tagSet.add(tag));
+    });
+    return Array.from(tagSet).sort();
+  };
+
   const filteredTodos = todos.filter(todo => {
-    if (filter === 'active') return !todo.completed;
-    if (filter === 'completed') return todo.completed;
-    return true;
+    // 基本フィルタ (状態による)
+    let matches = true;
+    if (filter === 'active') matches = !todo.completed;
+    if (filter === 'completed') matches = todo.completed;
+    
+    // タグフィルタ
+    if (matches && selectedTag) {
+      matches = todo.tags?.includes(selectedTag) || false;
+    }
+    
+    return matches;
   });
 
   const activeTodosCount = todos.filter(todo => !todo.completed).length;
@@ -192,6 +230,15 @@ export function TodoApp() {
             activeTodosCount={activeTodosCount}
             completedTodosCount={completedTodosCount}
             onClearCompleted={clearCompleted}
+          />
+        </div>
+
+        {/* 🏷️ タグフィルタ */}
+        <div className="mt-4">
+          <TagFilter
+            availableTags={getAllTags()}
+            selectedTag={selectedTag}
+            onTagSelect={setSelectedTag}
           />
         </div>
 

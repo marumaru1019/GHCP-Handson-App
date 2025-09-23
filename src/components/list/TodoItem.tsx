@@ -186,6 +186,28 @@ export function TodoItem({
         </div>
       )}
 
+      {/* 🏷️ タグ表示 */}
+      {todo.tags && todo.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1 pt-2 border-t border-gray-200 dark:border-gray-600">
+          {todo.tags.slice(0, 3).map((tag, index) => (
+            <span
+              key={index}
+              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                         bg-blue-100 text-blue-800 border border-blue-200
+                         dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-700"
+            >
+              {tag}
+            </span>
+          ))}
+          {todo.tags.length > 3 && (
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs
+                           text-gray-500 dark:text-gray-400">
+              +{todo.tags.length - 3}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* 📅 作成日時 */}
       <div className="text-xs text-gray-500 dark:text-gray-400 border-t pt-2 border-gray-200 dark:border-gray-600">
         {new Date(todo.createdAt).toLocaleDateString('ja-JP', {
