@@ -73,7 +73,7 @@ describe('TodoInput', () => {
     
     expect(onAddTodo).toHaveBeenCalledWith('テストタスク', ['仕事', '開発', 'テスト']);
     expect(input.value).toBe('');
-    expect(tagInput.value).toBe('');
+    expect((tagInput as HTMLInputElement).value).toBe('');
   });
 
   it('空のタグ入力ではundefinedが渡される', () => {
