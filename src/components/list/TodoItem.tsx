@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Todo, Priority, TodoStatus } from '@/types';
 import { AlertCircle, Circle, CheckCircle, Edit3, Trash2 } from 'lucide-react';
+import { getRelativeTime } from '@/lib/dateUtils';
 
 interface TodoItemProps {
   todo: Todo;
@@ -24,9 +25,10 @@ export function TodoItem({
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
 
+  // Created by GHCP
   const handleEdit = () => {
     if (editText.trim() && editText !== todo.text) {
-      onEdit(todo.id, editText);
+  onEdit(todo.id, editText); // 修正: 'iid' を 'id' に変更 (Todo インターフェースに合わせる)
     }
     setIsEditing(false);
   };
@@ -162,7 +164,7 @@ export function TodoItem({
       {isEditing ? (
         <textarea
           value={editText}
-          onChange={(e) => setEditText(e.target.value)}
+          onChange={(event) => setEditText(event.target.value)}
           onBlur={handleEdit}
           onKeyDown={handleKeyDown}
           className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded
@@ -188,13 +190,7 @@ export function TodoItem({
 
       {/* 📅 作成日時 */}
       <div className="text-xs text-gray-500 dark:text-gray-400 border-t pt-2 border-gray-200 dark:border-gray-600">
-        {new Date(todo.createdAt).toLocaleDateString('ja-JP', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        })}
+        {getRelativeTime(new Date(todo.createdAt))}
       </div>
     </div>
   );
