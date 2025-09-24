@@ -11,6 +11,11 @@ import { FileText, LayoutDashboard, Trash2 } from 'lucide-react';
 const TODOS_STORAGE_KEY = 'todos';
 const FILTER_STORAGE_KEY = 'todoFilter';
 
+/**
+ * TodoApp コンポーネント
+ * 
+ * 現在は props なし。今後拡張時は public API をJSDocで記載してください。
+ */
 export function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [filter, setFilter] = useState<TodoFilter>('all');
@@ -29,6 +34,7 @@ export function TodoApp() {
           createdAt: new Date(todo.createdAt),
           status: todo.status || (todo.completed ? 'done' : 'todo'), // 📝 既存データの互換性
           priority: todo.priority || 'medium', // 📝 デフォルト優先度
+          dueDate: todo.dueDate ? new Date(todo.dueDate) : null, // 🗓️ 期限復元 (存在すれば)
         }));
         setTodos(todosWithDates);
         console.log('✅ TodoApp: データ読み込み完了:', todosWithDates.length, '件'); // 🐞 デバッグログ
@@ -69,7 +75,7 @@ export function TodoApp() {
     }
   }, [filter]);
 
-  const addTodo = (text: string) => {
+  const addTodo = (text: string, dueDate?: Date | null) => {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
       text: text.trim(),
@@ -77,6 +83,7 @@ export function TodoApp() {
       createdAt: new Date(),
       status: 'todo', // 📝 カンバン用のステータスを追加
       priority: 'medium', // 📝 デフォルト優先度を追加
+      dueDate: dueDate ?? null,
     };
     setTodos(prev => [newTodo, ...prev]);
   };
@@ -183,7 +190,7 @@ export function TodoApp() {
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <TodoInput onAddTodo={addTodo} />
+  <TodoInput onAddTodo={addTodo} />
 
         <div className="mt-6">
           <TodoFilterComponent

@@ -3,31 +3,46 @@
 import { useState } from 'react';
 
 interface TodoInputProps {
-  onAddTodo: (text: string) => void;
+  onAddTodo: (text: string, dueDate?: Date | null) => void;
 }
 
 export function TodoInput({ onAddTodo }: TodoInputProps) {
   const [inputValue, setInputValue] = useState('');
+  const [dueDate, setDueDate] = useState<string>(''); // yyyy-mm-dd
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
-      onAddTodo(inputValue);
+      onAddTodo(inputValue, dueDate ? new Date(dueDate + 'T00:00:00') : null);
       setInputValue('');
+      setDueDate('');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        placeholder="新しいタスクを入力してください..."        className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+    <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2">
+      <div className="flex flex-1 gap-2">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="新しいタスクを入力してください..."
+          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
                    bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
                    focus:outline-none focus:ring-2 focus:ring-[#ff0033] focus:border-transparent
                    placeholder-gray-500 dark:placeholder-gray-400"
-      />      <button
+        />
+        <input
+          type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            className="w-44 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                     bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
+                     focus:outline-none focus:ring-2 focus:ring-[#ff0033] focus:border-transparent text-sm"
+            aria-label="期限"
+          />
+      </div>
+      <button
         type="submit"
         disabled={!inputValue.trim()}
         className="px-6 py-2 bg-[#ff0033] hover:bg-[#e6002e] disabled:bg-gray-300 dark:disabled:bg-gray-600
