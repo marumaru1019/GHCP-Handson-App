@@ -204,7 +204,7 @@ export function TodoItem({
                 ${(() => {
                   const now = new Date();
                   const due = new Date(todo.dueDate as Date);
-                  const isOverdue = !todo.completed && due.getTime() < now.setHours(23,59,59,999);
+                  const isOverdue = !todo.completed && due.getTime() < new Date(now).setHours(23,59,59,999);
                   if (todo.completed) {
                     return 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700';
                   }
