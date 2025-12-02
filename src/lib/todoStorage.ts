@@ -80,8 +80,8 @@ export function parseStoredTodos(json: string): ParseResult {
 
   try {
     parsed = JSON.parse(json);
-  } catch {
-    console.warn('⚠️ parseStoredTodos: JSON パースに失敗しました');
+  } catch (error) {
+    console.warn('⚠️ parseStoredTodos: JSON パースに失敗しました', error);
     return { todos: [], skippedCount: 0 };
   }
 

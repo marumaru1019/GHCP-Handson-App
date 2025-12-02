@@ -101,7 +101,8 @@ describe('parseStoredTodos', () => {
       expect(todos).toHaveLength(0);
       expect(skippedCount).toBe(0);
       expect(consoleSpy.warn).toHaveBeenCalledWith(
-        expect.stringContaining('JSON パースに失敗')
+        expect.stringContaining('JSON パースに失敗'),
+        expect.any(Error)
       );
     });
 
