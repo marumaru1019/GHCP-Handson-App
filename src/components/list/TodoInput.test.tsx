@@ -51,6 +51,14 @@ describe('TodoInput', () => {
     expect(input.value).toBe('');
   });
 
+  it('前後の空白がトリムされた値がonAddTodoに渡される', () => {
+    const { input, button, onAddTodo } = setup();
+    fireEvent.change(input, { target: { value: '  hello world  ' } });
+    fireEvent.click(button);
+    expect(onAddTodo).toHaveBeenCalledWith('hello world');
+    expect(input.value).toBe('');
+  });
+
   it('Propsの型チェック: onAddTodoが必須', () => {
     expect(true).toBe(true);
   });
