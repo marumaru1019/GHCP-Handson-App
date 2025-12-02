@@ -25,6 +25,7 @@ export function KanbanCard({
 }: KanbanCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
+  const [editError, setEditError] = useState<string | null>(null);
 
   // 🎨 優先度に応じたアイコンとスタイルを取得
   const getPriorityIcon = (priority: Priority) => {
@@ -58,19 +59,28 @@ export function KanbanCard({
   const handleEditStart = () => {
     setIsEditing(true);
     setEditText(todo.text);
+    setEditError(null);
   };
 
   // ✅ 編集の保存
   const handleEditSave = () => {
-    if (editText.trim() && editText !== todo.text) {
-      onEditTodo(todo.id, editText.trim());
+    const trimmedText = editText.trim();
+    // 🚩 空文字列の場合はエラーメッセージを表示
+    if (!trimmedText) {
+      setEditError('タスク内容を入力してください');
+      return;
     }
+    if (trimmedText !== todo.text) {
+      onEditTodo(todo.id, trimmedText);
+    }
+    setEditError(null);
     setIsEditing(false);
   };
 
   // ❌ 編集のキャンセル
   const handleEditCancel = () => {
     setEditText(todo.text);
+    setEditError(null);
     setIsEditing(false);
   };
 
@@ -138,15 +148,22 @@ export function KanbanCard({
         <div className="space-y-2">
           <textarea
             value={editText}
-            onChange={(e) => setEditText(e.target.value)}
+            onChange={(e) => {
+              setEditText(e.target.value);
+              if (editError) setEditError(null);
+            }}
             onKeyDown={handleKeyDown}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded
+            className={`w-full p-2 border rounded
                        bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
                        focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                       resize-none"
+                       resize-none ${editError ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600'}`}
             rows={3}
             autoFocus
           />
+          {/* 🚩 エラーメッセージの表示 */}
+          {editError && (
+            <p className="text-red-500 dark:text-red-400 text-xs">{editError}</p>
+          )}
           <div className="flex items-center gap-2">
             <button
               onClick={handleEditSave}
