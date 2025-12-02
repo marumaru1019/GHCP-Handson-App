@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Todo, TodoFilter } from '@/types';
+import { parseStoredTodos } from '@/lib/todoStorage';
 import { TodoItem } from './TodoItem';
 import { TodoInput } from './TodoInput';
 import { TodoFilter as TodoFilterComponent } from './TodoFilter';
@@ -21,17 +22,14 @@ export function TodoApp() {
       console.log('🔄 TodoApp: データ読み込み開始'); // 🐞 デバッグログ
       const storedTodos = localStorage.getItem(TODOS_STORAGE_KEY);
       if (storedTodos) {
-        const parsedTodos = JSON.parse(storedTodos);
+        // 📅 型安全な復元処理（不正データはスキップ）
+        const { todos: parsedTodos, skippedCount } = parseStoredTodos(storedTodos);
         console.log('📦 TodoApp: 保存されたデータ:', parsedTodos.length, '件'); // 🐞 デバッグログ
-        // 📅 日付オブジェクトを復元 & カンバン用プロパティを追加
-        const todosWithDates = parsedTodos.map((todo: any) => ({
-          ...todo,
-          createdAt: new Date(todo.createdAt),
-          status: todo.status || (todo.completed ? 'done' : 'todo'), // 📝 既存データの互換性
-          priority: todo.priority || 'medium', // 📝 デフォルト優先度
-        }));
-        setTodos(todosWithDates);
-        console.log('✅ TodoApp: データ読み込み完了:', todosWithDates.length, '件'); // 🐞 デバッグログ
+        if (skippedCount > 0) {
+          console.warn(`⚠️ TodoApp: ${skippedCount} 件の不正なデータをスキップしました`);
+        }
+        setTodos(parsedTodos);
+        console.log('✅ TodoApp: データ読み込み完了:', parsedTodos.length, '件'); // 🐞 デバッグログ
       } else {
         console.log('📭 TodoApp: 保存されたデータなし'); // 🐞 デバッグログ
       }
