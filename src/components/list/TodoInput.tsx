@@ -11,8 +11,9 @@ export function TodoInput({ onAddTodo }: TodoInputProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputValue.trim()) {
-      onAddTodo(inputValue);
+    const normalized = inputValue.trim();
+    if (normalized) {
+      onAddTodo(normalized);
       setInputValue('');
     }
   };
