@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "test": "jest",
+    "test:ci": "jest --ci --coverage",
+    "typecheck": "tsc --noEmit",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
