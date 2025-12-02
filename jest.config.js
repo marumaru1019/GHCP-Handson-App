@@ -5,7 +5,7 @@
 const nextJest = require('next/jest');
 
 const createJestConfig = nextJest({
-  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  // Next.js アプリのパスを指定し、next.config.js と .env ファイルをテスト環境で読み込む
   dir: './',
 });
 
