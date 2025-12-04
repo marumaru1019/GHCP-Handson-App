@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Todo, Priority, TodoStatus } from '@/types';
-import { AlertCircle, Circle, CheckCircle, Edit3, Trash2 } from 'lucide-react';
+import { AlertCircle, Circle, CheckCircle, Edit3, Trash2, CalendarClock } from 'lucide-react';
 
 interface TodoItemProps {
   todo: Todo;
@@ -186,15 +186,45 @@ export function TodoItem({
         </div>
       )}
 
-      {/* 📅 作成日時 */}
-      <div className="text-xs text-gray-500 dark:text-gray-400 border-t pt-2 border-gray-200 dark:border-gray-600">
-        {new Date(todo.createdAt).toLocaleDateString('ja-JP', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        })}
+      {/* 📅 期限 & 作成日時 */}
+      <div className="flex flex-col gap-1 border-t pt-2 border-gray-200 dark:border-gray-600">
+        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          <span>
+            {new Date(todo.createdAt).toLocaleDateString('ja-JP', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </span>
+          {todo.dueDate && (
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-medium
+                ${(() => {
+                  const now = new Date();
+                  const due = new Date(todo.dueDate as Date);
+                  const endOfDay = new Date(now);
+                  endOfDay.setHours(23, 59, 59, 999);
+                  const isOverdue = !todo.completed && due.getTime() < endOfDay.getTime();
+                  if (todo.completed) {
+                    return 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700';
+                  }
+                  if (isOverdue) {
+                    return 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700 animate-pulse';
+                  }
+                  return 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-700';
+                })()}`}
+              title="期限"
+            >
+              <CalendarClock size={12} />
+              {new Date(todo.dueDate).toLocaleDateString('ja-JP', {
+                month: 'short',
+                day: 'numeric'
+              })}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
