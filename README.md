@@ -56,6 +56,12 @@ cd GHCP-Handson-App
 npm install
 ```
 
+`npm install` で依存関係の解決に失敗する環境では、以下を使用してください。
+
+```bash
+npm install --legacy-peer-deps
+```
+
 ### 3. 開発サーバーの起動
 ```bash
 npm run dev
@@ -72,6 +78,16 @@ npm run dev
 # 全テストを実行
 npm test
 ```
+
+## 📜 利用可能なスクリプト
+
+| コマンド | 説明 |
+| --- | --- |
+| `npm run dev` | 開発サーバーを起動 |
+| `npm test` | Jestテストを実行 |
+| `npm run build` | 本番ビルドを作成 |
+| `npm start` | 本番ビルドを起動 |
+| `npm run lint` | ESLintを実行 |
 
 ## 🏗️ ビルドとデプロイ
 
@@ -91,3 +107,7 @@ npm run lint
 ```
 
 詳細なコーディング規約については [CODING_GUIDELINES.md](./CODING_GUIDELINES.md) を参照してください。
+
+## 🔧 トラブルシューティング
+
+- `next/font` が Google Fonts を取得できずビルド失敗する場合は、ネットワーク制限のない環境で再実行してください。
